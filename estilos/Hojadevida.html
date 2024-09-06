@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harold Alejandro Vargas Martínez</title>
+    <link rel="stylesheet" href="estiloCV.css">
+</head>
+<body>
+    <div class="container fade-in">
+        <h1>HAROLD ALEJANDRO VARGAS MARTÍNEZ</h1>
+        <p class="subtitle">ESTUDIANTE</p>
+        <div class="sobre-mi">
+            <h2>SOBRE MÍ</h2>
+            <p>Estudiante de Ingeniería de Sistemas. Me considero una persona responsable y ordenada. Me gusta superarme en todos los aspectos de mi vida, brindando lo mejor de mí cada día, tanto en el aspecto laboral como en el aspecto personal.</p>
+        </div>
+
+        <h2>HABILIDADES</h2>
+        <ul>
+            <li>Trabajo en equipo</li>
+            <li>Responsable</li>
+            <li>Amable</li>
+            <li>Proactivo</li>
+            <li>Fácil adaptación</li>
+        </ul>
+
+        <h2>ESTUDIOS</h2>
+        <ul>
+            <li>
+                <strong>UNIVERSIDAD MINUTO DE DIOS</strong><br>
+                2023 - actualidad<br>
+                Ingeniería de Sistemas - Tercer semestre
+            </li>
+            <li>
+                <strong>Colegio Gimnasio Santa Rocío</strong><br>
+                Bachiller Técnico Comercial
+            </li>
+            <li>
+                <strong>SENA</strong><br>
+                2021-2022<br>
+                Técnico en Asesoría Comercial
+            </li>
+        </ul>
+
+        <h2>IDIOMAS</h2>
+        <div class="language-item">
+            <span>Inglés básico</span>
+            <div class="language-bar">
+                <div class="language-progress" style="width: 30%;"></div>
+            </div>
+        </div>
+        <div class="language-item">
+            <span>Español nativo</span>
+            <div class="language-bar">
+                <div class="language-progress" style="width: 100%;"></div>
+            </div>
+        </div>
+
+        <!-- Resto del contenido sin cambios -->
+    </div>
+    <script>
+        // Animación de las barras de progreso
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const bars = document.querySelectorAll('.language-progress');
+            bars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 500);
+            });
+        });
+    </script>
+
+        <h2>CONOCIMIENTOS</h2>
+        <ul>
+            <li>Excel (Intermedio)</li>
+            <li>Programación (básica) JAVA</li>
+            <li>En manejo de Canva</li>
+        </ul>
+
+
+
+        <div class="contacto">
+            <h2>CONTACTO</h2>
+            <p>📞 315-372-0326</p>
+            <p>✉️ <a href="mailto:harold28082005@gmail.com">harold28082005@gmail.com</a></p>
+            <p>🏠 Calle 22B#12a53 bla 58 apto 201, Portales del Real II Etapa</p>
+            <p>🔗 <a href="https://www.linkedin.com/in/harold-vargas-b32771288" target="_blank">linkedin.com/in/harold-vargas-b32771288</a></p>
+        </div>
+    </div>
+    </div>
+</body>
+</html>
