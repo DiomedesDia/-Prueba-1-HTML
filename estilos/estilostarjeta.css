@@ -1,0 +1,57 @@
+body{
+    background-color: rgb(241, 241, 206);/* Color fondo*/
+    margin: 0; /*Elimina la imagen que viene predeterminada*/
+    padding:0; /* Elimina espacios*/
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+.container
+{
+    display: flex; /*Organiza los hijos en forma flexible*/
+    flex-direction: column; /* Alinea los elementos en columna*/
+    align-items: center; /*Centra los articulos*/
+    gap :20px; /* Espacioe entre articulos*/
+
+}
+section article{
+    transition: box-shadow 0.35 ease;
+    background-color: white ;
+    margin: 16px 0;
+    border-radius: 8px;
+    padding: 4px;
+    cursor: pointer;
+}
+
+section article:hover{
+    box-shadow:  0 1.5px 6.4px rgba(90, 89, 89, 0.674)
+}
+section article h2, section article p{
+   margin: 16px;  
+}
+section article h2, section article p{
+    margin: 16px;
+ }
+footer{
+    background-color: saddlebrown;
+    color: white;
+    padding: 48px;
+}
+footer section{
+    float: right;
+    margin: 0;
+}
+footer a{
+    transition: color 0.3s ease;
+    color: white;
+    text-decoration: none;
+}
+footer a:hover{
+    color: rgb(172, 244, 225);
+
+    }
+    header{
+        background-color:rgba(90, 89, 89, 0.674);
+        padding: 16px;
+    }
+    header h1{
+        color: #ffffff;
+    }
