@@ -1,0 +1,169 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'PT Sans', Verdana;
+    color: white;
+    background: url('https://static.wixstatic.com/media/11062b_a1528b08d39e4a7cbab288ee36a69304~mv2.jpg') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro y semitransparente */
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    backdrop-filter: blur(10px); /* Efecto de difuminado */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Sombra sutil */
+    transition: all 0.3s ease-in-out;
+}
+
+
+
+.logo img {
+    width: 200px;
+    transition: transform 0.3s ease; /* Animación de transform */
+}
+
+.logo h1 {
+    display: inline;
+    font-size: 24px;
+}
+
+.nav input[type="text"] {
+    padding: 5px;
+    font-size: 16px;
+    margin-right: 15px;
+}
+.nav a {
+    color: white;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+.nav a:hover {
+    color: #00e0ff; /* Color futurista */
+    transform: scale(1.1); /* Ligeramente más grande al pasar el ratón */
+}
+.header.scrolled {
+    background-color: rgba(0, 0, 0, 0.9); /* Fondo más oscuro al hacer scroll */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* Sombra más marcada */
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+.header {
+    animation: slideIn 0.5s ease-out;
+}
+
+
+.hero {
+    height: 50vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+}
+
+.hero h2 {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.central-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    position: relative; /* Cambio a 'relative' para evitar el problema de posicionamiento absoluto */
+    z-index: 1;
+}
+
+.central-text h1 {
+    font-size: 36px;
+    margin: 0;
+}
+
+.central-text p {
+    font-size: 18px;
+    margin: 5px 0 0;
+}
+
+.footer {
+    background-color: #333;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    width: 100%;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-links a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+/* Estilo de las imágenes dentro del section */
+section {
+    display: flex;
+    justify-content: center; /* Centra los elementos dentro del section */
+    align-items: center;
+    width: 100%; /* Hacer que el section ocupe todo el ancho disponible */
+    max-width: 900px; /* Límite máximo de tamaño para mantener la estética */
+    height: 430px;
+    margin: 20px auto; /* Centra el section horizontalmente con un margen */
+}
+
+section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: .8;
+    transition: .5s ease;
+}
+
+section img:hover {
+    cursor: crosshair;
+    opacity: 1;
+    filter: contrast(120%);
+    transform: scale(1.1); /* Hace que la imagen se agrande al pasar el mouse */
+}
+

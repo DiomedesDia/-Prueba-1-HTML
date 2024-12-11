@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Wordblitz - Juego de Mecanografía</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #001a33 0%, #000000 100%);
+            color: #fff;
+            font-family: 'Orbitron', monospace;
+        }
+        #game-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        .word {
+            position: absolute;
+            font-size: 24px;
+            text-shadow: 0 0 10px #00e6e6, 0 0 20px #00e6e6, 0 0 30px #00e6e6;
+            color: #00ffff;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', monospace;
+        }
+        .active {
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00;
+        }
+        .exploding {
+            animation: explode 0.5s ease-out forwards;
+        }
+        @keyframes explode {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        #score {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 36px;
+            color: #00e6e6;
+            text-shadow: 0 0 10px #00e6e6;
+            z-index: 1000;
+        }
+        #current-word {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+            z-index: 1000;
+        }
+        #game-over, #start-screen {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 40px;
+            text-align: center;
+            border: 2px solid #00e6e6;
+            box-shadow: 0 0 20px #00e6e6;
+            z-index: 1000;
+        }
+        #game-over {
+            display: none;
+        }
+        button {
+            background: transparent;
+            color: #00e6e6;
+            border: 2px solid #00e6e6;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 20px;
+            text-shadow: 0 0 10px #00e6e6;
+            box-shadow: 0 0 10px #00e6e6;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', monospace;
+        }
+        button:hover {
+            background: #00e6e6;
+            color: #000;
+        }
+        #spaceship {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            z-index: 100;
+            filter: drop-shadow(0 0 10px #00ffff);
+        }
+        .laser {
+            position: absolute;
+            width: 2px;
+            background: #00ffff;
+            box-shadow: 0 0 10px #00ffff;
+            transform-origin: bottom center;
+        }
+    </style>
+</head>
+<body>
+    <svg id="spaceship" viewBox="0 0 50 50">
+        <path d="M25 0 L40 40 L25 30 L10 40 Z" fill="#00ffff" opacity="0.8">
+            <animate attributeName="opacity" values="0.8;1;0.8" dur="1s" repeatCount="indefinite"/>
+        </path>
+        <circle cx="25" cy="20" r="7" fill="#00ffff" opacity="0.6">
+            <animate attributeName="r" values="7;8;7" dur="0.5s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.6;0.8;0.6" dur="0.5s" repeatCount="indefinite"/>
+        </circle>
+    </svg>
+
+    <div id="game-container">
+        <div id="score">0</div>
+        <div id="current-word"></div>
+        <div id="start-screen">
+            <h1>Wordblitz</h1>
+            <p>Escribe las palabras para sobrevivir</p>
+            <button onclick="startGame()">INICIAR</button>
+            <button onclick="goToHomePage()">VOLVER AL INICIO</button>
+        </div>
+        <div id="game-over">
+            <h2>GAME OVER</h2>
+            <p>Puntuación: <span id="final-score">0</span></p>
+            <button onclick="startGame()">REINTENTAR</button>
+            <button onclick="goToHomePage()">VOLVER AL INICIO</button>
+        </div>
+    </div>
+
+    <script>
+        // Función para redirigir al inicio (index.html)
+        function goToHomePage() {
+            window.location.href = 'index.html';  // Cambia 'index.html' al nombre de tu página principal si es diferente
+        }
+
+        const palabras = [
+            'codigo', 'datos', 'valor', 'clave', 'funcion',
+            'bucle', 'clase', 'lista', 'matriz', 'objeto',
+            'metodo', 'prueba', 'salida', 'estado', 'nombre',
+            'tiempo', 'archivo', 'memoria', 'enlace', 'puerto',
+            'usuario', 'inicio', 'final', 'retorno', 'modulo','silla', 'mesa', 'libro',
+            ,'lapiz' ,'boligrafo' ,'reloj' ,'telefono', 'computadora','perro','murcielago','gato',
+            'pajaro','conejo','tortuga','serpiente','lagarto',
+        ];
+
+        let activeWords = [];
+        let currentWord = '';
+        let score = 0;
+        let gameInterval;
+        let isGameActive = false;
+        let lastWordTime = 0;
+        const minTimeBetweenWords = 1000; // Tiempo mínimo entre palabras (ms)
+
+        function createWord() {
+            if (!isGameActive) return;
+
+            const currentTime = Date.now();
+            if (currentTime - lastWordTime < minTimeBetweenWords) return;
+
+            const word = palabras[Math.floor(Math.random() * palabras.length)];
+            const wordElement = document.createElement('div');
+            wordElement.className = 'word';
+            wordElement.textContent = word;
+            
+            const minDistance = 200; // Distancia mínima entre palabras
+            let x;
+            let validPosition = false;
+            let attempts = 0;
+            const maxAttempts = 10;
+            
+            while (!validPosition && attempts < maxAttempts) {
+                x = Math.random() * (window.innerWidth - 150) + 75;
+                validPosition = true;
+                
+                for (const activeWord of activeWords) {
+                    const activeWordRect = activeWord.element.getBoundingClientRect();
+                    if (Math.abs(x - activeWordRect.left) < minDistance) {
+                        validPosition = false;
+                        break;
+                    }
+                }
+                attempts++;
+            }
+            
+            if (validPosition) {
+                wordElement.style.left = x + 'px';
+                wordElement.style.top = '20px';
+
+                document.getElementById('game-container').appendChild(wordElement);
+                activeWords.push({
+                    element: wordElement,
+                    word: word,
+                    top: 20,
+                    speed: 0.3 + Math.random() * 0.3
+                });
+                
+                lastWordTime = currentTime;
+            }
+        }
+
+        function createLaser(targetWord) {
+            const laser = document.createElement('div');
+            laser.className = 'laser';
+            const spaceship = document.getElementById('spaceship');
+            const spaceshipRect = spaceship.getBoundingClientRect();
+            
+            laser.style.left = (spaceshipRect.left + spaceshipRect.width / 2) + 'px';
+            laser.style.bottom = '120px';
+            laser.style.height = '0px';
+            
+            document.body.appendChild(laser);
+
+            const targetRect = targetWord.element.getBoundingClientRect();
+            const distance = spaceshipRect.top - targetRect.top;
+            const angle = Math.atan2(
+                targetRect.left - spaceshipRect.left,
+                spaceshipRect.top - targetRect.top
+            );
+
+            laser.style.transform = `rotate(${angle}rad)`;
+            
+            return laser.animate([
+                { height: '0px' },
+                { height: distance + 'px' }
+            ], {
+                duration: 200,
+                easing: 'linear'
+            });
+        }
+
+        function startGame() {
+            activeWords = [];
+            score = 0;
+            document.getElementById('score').textContent = '0';
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('game-over').style.display = 'none';
+            
+            const gameContainer = document.getElementById('game-container');
+            const words = document.getElementsByClassName('word');
+            while(words.length > 0) {
+                words[0].remove();
+            }
+
+            isGameActive = true;
+            lastWordTime = 0;
+            gameInterval = setInterval(createWord, 2000);
+            requestAnimationFrame(updateWords);
+        }
+
+        function updateWords() {
+            if (!isGameActive) return;
+
+            for (let i = activeWords.length - 1; i >= 0; i--) {
+                const wordObj = activeWords[i];
+                wordObj.top += wordObj.speed;
+                wordObj.element.style.top = wordObj.top + 'px';
+
+                if (wordObj.top > window.innerHeight - 100) {
+                    gameOver();
+                    return;
+                }
+            }
+            requestAnimationFrame(updateWords);
+        }
+
+        function gameOver() {
+            isGameActive = false;
+            clearInterval(gameInterval);
+            document.getElementById('game-over').style.display = 'block';
+            document.getElementById('final-score').textContent = score;
+        }
+
+        function checkWord(input) {
+            for (let i = 0; i < activeWords.length; i++) {
+                const wordObj = activeWords[i];
+                if (wordObj.word === input) {
+                    const laser = createLaser(wordObj);
+                    laser.onfinish = () => {
+                        wordObj.element.classList.add('exploding');
+                        setTimeout(() => {
+                            wordObj.element.remove();
+                            activeWords.splice(i, 1);
+                        }, 500);
+                    };
+                    score += 10;
+                    document.getElementById('score').textContent = score;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        let typingBuffer = '';
+        document.addEventListener('keydown', (e) => {
+            if (!isGameActive) return;
+
+            if (e.key.length === 1) {
+                typingBuffer += e.key;
+                document.getElementById('current-word').textContent = typingBuffer;
+            } else if (e.key === 'Backspace') {
+                typingBuffer = typingBuffer.slice(0, -1);
+                document.getElementById('current-word').textContent = typingBuffer;
+            } else if (e.key === 'Enter') {
+                if (checkWord(typingBuffer)) {
+                    typingBuffer = '';
+                } else {
+                    document.getElementById('current-word').style.color = '#ff0000';
+                    setTimeout(() => {
+                        document.getElementById('current-word').style.color = '#00ff00';
+                    }, 200);
+                }
+                document.getElementById('current-word').textContent = typingBuffer;
+            }
+        });
+    </script>
+</body>
+</html>
